@@ -1,4 +1,4 @@
-@import 'tailwindcss";
+@import "tailwindcss";
 
 /* success */
 [data-sonner-toast][data-type="success"] {
