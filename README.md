@@ -41,15 +41,3 @@ npm run dev
 ```
 
 La app estará disponible en `http://localhost:5173`.
-
-## Build para producción
-
-```bash
-npm run build
-```
-
-## Deploy a GitHub Pages
-
-```bash
-npm run deploy
-```
