@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePosts } from "../context/PostsContext";
+import {toast} from "sonner";
 
-export default function PostFormPage() {
+export default function CreatePostPage() {
   const navigate = useNavigate();
   const { addPost } = usePosts();
   const titleRef = useRef(null); // useRef para el foco automático
@@ -42,17 +43,19 @@ export default function PostFormPage() {
 
     try {
         const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...form, userId: Number(form.userId) }),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...form, userId: Number(form.userId) }),
         });
         if (!res.ok) {
-            throw new Error(`Error ${res.status}`);
-        } else {
-            const data = await res.json();
-            addPost(data);
-            navigate("/posts");
+          toast.error("POST: ERROR " + res.status, { description: "No se pudo crear el post. Intentá de nuevo." });
+          throw new Error(`Error ${res.status}`);
+          return;
         }
+        toast.success("POST: OK 201", { description: "Post creado correctamente" });
+        const data = await res.json();
+        addPost(data);
+        navigate("/posts");
     } catch (err) {
         setErrors({ api: "No se pudo crear el post. Intentá de nuevo." });
     } finally {

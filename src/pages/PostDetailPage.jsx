@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { usePosts } from "../context/PostsContext";
+import {toast} from "sonner";
 
 export default function PostDetailPage() {
   const { id } = useParams();
@@ -37,7 +38,11 @@ export default function PostDetailPage() {
                 body: JSON.stringify(form),
             });
             editPost(Number(id), form);
-            if (!res.ok) throw new Error(`Error ${res.status}`);
+            if (!res.ok){
+              throw new Error(`Error ${res.status}`);   
+              toast.error("PUT: ERROR " + res.status, { description: `No se pudo actualizar el post ${id}` });
+            }
+            toast.success("PUT: OK 200", { description: `Post ${id} actualizado correctamente` });
             setEditing(false);
             setSaved(true);
             setTimeout(() => setSaved(false), 3000);
@@ -54,7 +59,11 @@ export default function PostDetailPage() {
       const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error(`Error ${res.status}`);
+      if (!res.ok) {
+        toast.error("DELETE: ERROR " + res.status, { description: `No se pudo eliminar el post ${id}` });
+        throw new Error(`Error ${res.status}`);
+      }
+      toast.success("DELETE: OK 200", { description: `Post ${id} eliminado correctamente` }); 
       deletePost(Number(id));
       navigate("/");
     } catch (err) {

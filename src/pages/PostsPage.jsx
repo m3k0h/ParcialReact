@@ -9,17 +9,18 @@ export default function PostsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [query, setQuery] = useState("");
     const postsPerPage = 9;
-    
+
     const { posts, loading, error, deletePost } = usePosts();
     const navigate = useNavigate();
 
-    const filtered = posts
-        ? posts.filter(post =>
-            !query ||
-            post.title.toLowerCase().includes(query) ||
-            post.body.toLowerCase().includes(query)
-          )
-        : [];
+    const sorted = posts ? [...posts].sort((a, b) => b.id - a.id) : [];
+
+    const filtered = sorted.filter(post =>
+        !query ||
+        post.id.toString() === query.trim() ||
+        post.title.toLowerCase().includes(query) ||
+        post.body.toLowerCase().includes(query)
+    );
 
     const totalPages = Math.ceil(filtered.length / postsPerPage) || 1;
     const currentPosts = filtered.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
